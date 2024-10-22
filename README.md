@@ -1,4 +1,4 @@
-Here's the updated version of the **Katamari Ecosystem** documentation, emphasizing **KatamariORM** as a simple-to-use, full-fledged ORM:
+Here's the full markdown including the **WebP** images from the `\imgs` folder:
 
 ---
 
@@ -10,33 +10,41 @@ Welcome to the **Katamari Ecosystem**, a modular system designed to offer a flex
 
 The **Katamari Ecosystem** consists of tightly integrated components, each designed to handle specific tasks while working together to form a cohesive, event-driven system:
 
-1. [KatamariDB](docs/KatamariDB.md): 
-   - A file-based, highly flexible key-value store inspired by MongoDB and Redis, using Elasticsearch-like queries.
-   - Offers a **simple-to-use, full-fledged ORM**, with capabilities such as **Multi-Version Concurrency Control (MVCC)**, advanced query support, and dynamic schema handling.
+### KatamariDB
+![KatamariDB Overview](imgs/katamaridb.webp)
 
-2. [KatamariPipelines](docs/KatamariPipelines.md): 
-   - A pipeline execution framework to manage ETL processes and real-time data streaming.
-   - Integrates seamlessly with **KatamariDB** and **KatamariLambda** to efficiently handle complex workflows in an event-driven manner.
+- A file-based, highly flexible key-value store inspired by MongoDB and Redis, using Elasticsearch-like queries.
+- Offers a **simple-to-use, full-fledged ORM**, with capabilities such as **Multi-Version Concurrency Control (MVCC)**, advanced query support, and dynamic schema handling.
 
-3. [KatamariMQ](docs/KatamariMQ.md): 
-   - A distributed message queue system designed for workload distribution, data sharding, and Lambda execution.
-   - Supports clustering and integrates with **KatamariLambda** for executing serverless functions in response to events, ensuring scalability and resilience.
+### KatamariPipelines
+![KatamariPipelines Overview](imgs/katamaripipelines.webp)
 
-4. [KatamariLambda](docs/KatamariLambda.md): 
-   - A serverless compute platform that supports event-driven, distributed function execution.
-   - Enables the definition, scheduling, and execution of serverless functions, tightly coupled with **KatamariMQ** for dynamic task management.
+- A pipeline execution framework to manage ETL processes and real-time data streaming.
+- Integrates seamlessly with **KatamariDB** and **KatamariLambda** to efficiently handle complex workflows in an event-driven manner.
 
-5. [KatamariUI](docs/KatamariUI.md): 
-   - An asynchronous UI framework powered by FastAPI and WebSockets, supporting dynamic page rendering, real-time updates, and interactive components.
-   - Provides a user-friendly interface with theming, notifications, and real-time visualizations, ideal for building dashboards and admin tools.
+### KatamariMQ
+![KatamariMQ Overview](imgs/katamarimq.webp)
 
-6. [KatamariCharts](docs/KatamariCharts.md): 
-   - A charting component that supports both **Chart.js** and **Matplotlib**, enabling rich data visualizations.
-   - Easily integrates with **KatamariUI**, allowing real-time data visualizations and historical analysis within user interfaces.
+- A distributed message queue system designed for workload distribution, data sharding, and Lambda execution.
+- Supports clustering and integrates with **KatamariLambda** for executing serverless functions in response to events, ensuring scalability and resilience.
 
-7. [KatamariAggregation](docs/KatamariAggregation.md):
-   - A dynamic metric aggregation engine that operates on top of **KatamariDB** and **KatamariORM**.
-   - Enables users to define custom metrics dynamically and compute them over real-time data streams or stored data, making it ideal for monitoring and analytics.
+### KatamariLambda
+![KatamariLambda Overview](imgs/katamarilambda.webp)
+
+- A serverless compute platform that supports event-driven, distributed function execution.
+- Enables the definition, scheduling, and execution of serverless functions, tightly coupled with **KatamariMQ** for dynamic task management.
+
+### KatamariUI
+- An asynchronous UI framework powered by FastAPI and WebSockets, supporting dynamic page rendering, real-time updates, and interactive components.
+- Provides a user-friendly interface with theming, notifications, and real-time visualizations, ideal for building dashboards and admin tools.
+
+### KatamariCharts
+- A charting component that supports both **Chart.js** and **Matplotlib**, enabling rich data visualizations.
+- Easily integrates with **KatamariUI**, allowing real-time data visualizations and historical analysis within user interfaces.
+
+### KatamariAggregation
+- A dynamic metric aggregation engine that operates on top of **KatamariDB** and **KatamariORM**.
+- Enables users to define custom metrics dynamically and compute them over real-time data streams or stored data, making it ideal for monitoring and analytics.
 
 ---
 
@@ -87,8 +95,8 @@ For detailed information on each component, refer to the individual documentatio
 - [KatamariCharts Documentation](docs/KatamariCharts.md)
 - [KatamariAggregation Documentation](docs/KatamariAggregation.md)
 
---- 
+---
 
 The **Katamari Ecosystem** represents one of the first comprehensive, event-driven frameworks designed to tackle the challenges of modern, distributed applications. With components that cover everything from data storage, job scheduling, real-time UI, to dynamic metrics aggregation, the ecosystem is ready to support a wide range of use cases, ensuring developers have a robust foundation to build on.
 
-Explore the power of **Katamari Ecosystem** and see how it can transform your approach to building scalable, data-driven, event-centric applications.
+Explore the power of the **Katamari Ecosystem** and see how it can transform your approach to building scalable, data-driven, event-centric applications.
