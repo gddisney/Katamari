@@ -1,5 +1,3 @@
-# Katamari
-Katamari Ecosystem
 # Katamari Ecosystem
 
 Welcome to the **Katamari Ecosystem**, a modular system designed to offer a flexible, near real-time platform for handling distributed workloads, data pipelines, message queuing, serverless functions, UI building, and much more. This ecosystem combines the power of multiple components working together seamlessly to provide a complete infrastructure for modern applications.
