@@ -14,7 +14,7 @@ The Katamari Ecosystem consists of the following key components:
 
 4. [KatamariLambda](docs/KatamariLambda.md): A serverless compute platform designed to handle event-driven workloads and scalable function execution. KatamariLambda allows you to define, schedule, and execute functions across distributed systems.
 
-5. [KatamariUI](docs/KatamariUI.md): A Streamlit-like UI framework integrated with FastAPI and WebSockets. It allows dynamic page rendering, theming, real-time updates, and components like charts, forms, and tables.
+5. [KatamariUI](docs/KatamariUI.md): A asynchronous UI framework integrated with FastAPI and WebSockets. It allows dynamic page rendering, theming, real-time updates, and components like charts, forms, and tables.
 
 6. [KatamariCharts](docs/KatamariCharts.md): A charting component of the ecosystem, supporting both **Chart.js** and **Matplotlib** for generating visualizations and embedding them within the **KatamariUI**.
 
@@ -23,7 +23,7 @@ The Katamari Ecosystem consists of the following key components:
 To get started with the **Katamari Ecosystem**, clone the repository, and explore the individual components inside the `docs/` directory for detailed usage instructions and examples.
 
 ```bash
-git clone https://github.com/your-repo/katamari-repo.git
+git clone https://github.com/gddisney/katamari.git
 ```
 
 ### Running Demos
