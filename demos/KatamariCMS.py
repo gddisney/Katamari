@@ -1,5 +1,6 @@
 import asyncio
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from fastapi.responses import RedirectResponse  # Import RedirectResponse for redirects
 from KatamariUI import KatamariUI
 from KatamariDB import KatamariORM
 
@@ -51,7 +52,9 @@ async def create_post(request: Request):
     title = form_data.get('title')
     content = form_data.get('content')
     await db.set(title, {'title': title, 'content': content, 'comments': []})
-    return await read_root(request)
+
+    # Redirect to the homepage after creating the post
+    return RedirectResponse(url="/", status_code=303)
 
 
 @app.get("/login")
@@ -71,7 +74,9 @@ async def login(request: Request):
     username = form_data.get('username')
     password = form_data.get('password')
     # Here, you would verify username and password
-    return await read_root(request)
+
+    # Redirect to the homepage after login
+    return RedirectResponse(url="/", status_code=303)
 
 
 @app.post("/post/{post_id}/comment")
@@ -84,5 +89,7 @@ async def add_comment(post_id: str, request: Request):
         comments = post_data['comments'] or []
         comments.append(comment)
         await db.set(post_id, {'comments': comments})
-    return await read_post(request, post_id)
+
+    # Redirect back to the post page after adding a comment
+    return RedirectResponse(url=f"/post/{post_id}", status_code=303)
 
