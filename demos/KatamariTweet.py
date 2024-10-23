@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request, Response, Form, HTTPException
+from fastapi import FastAPI, Request, Response, HTTPException
+from fastapi.responses import RedirectResponse  # Import RedirectResponse for redirects
 from KatamariDB import KatamariMVCC  # Import the provided KatamariMVCC
 from KatamariUI import katamari_ui_app, KatamariUI
 import time
@@ -25,11 +26,15 @@ async def timeline_page_ui(ui: KatamariUI):
     """Render the timeline UI showing all tweets."""
     await ui.add_header("Timeline", level=1)
     tweets = tweet_db.store.keys()  # Get all tweet IDs
-    for tweet_id in tweets:
-        tweet_data = tweet_db.get(tweet_id, None)
-        await ui.text(f"<strong>{tweet_data['username']}:</strong> {tweet_data['content']}")
-        await ui.text(f"<a href='/tweet/{tweet_id}'>View Tweet</a> | <a href='/like/{tweet_id}'>Like ({tweet_data['likes']})</a>")
-        await ui.text("<hr>")
+    if tweets:
+        for tweet_id in tweets:
+            tweet_data = tweet_db.get(tweet_id, None)
+            if tweet_data:
+                await ui.text(f"<strong>{tweet_data['username']}:</strong> {tweet_data['content']}")
+                await ui.text(f"<a href='/tweet/{tweet_id}'>View Tweet</a> | <a href='/like/{tweet_id}'>Like ({tweet_data['likes']})</a>")
+                await ui.text("<hr>")
+    else:
+        await ui.text("No tweets available at the moment.")
 
 # View an individual tweet and its comments
 async def view_tweet_ui(ui: KatamariUI, tweet_id: str):
@@ -38,19 +43,23 @@ async def view_tweet_ui(ui: KatamariUI, tweet_id: str):
     if tweet_data is None:
         raise HTTPException(status_code=404, detail="Tweet not found")
 
+    # Display tweet content
     await ui.add_header(f"{tweet_data['username']}'s Tweet", level=1)
     await ui.text(tweet_data["content"])
     await ui.text(f"Likes: {tweet_data['likes']}")
     await ui.text("<hr>")
-    
+
+    # Display all comments for the tweet
     await ui.text("Comments:")
     for comment_id in tweet_data.get("comments", []):
         comment_data = comment_db.get(comment_id, None)
         if comment_data:
-            await ui.text(f"{comment_data['username']}: {comment_data['content']}")
+            await ui.text(f"<strong>{comment_data['username']}:</strong> {comment_data['content']}")
 
-    await ui.textarea("Add a comment:", "comment")
-    await ui.button("Submit Comment", "submit_comment")
+    # Form to submit a new comment
+    await ui.add_header("Add a Comment:", level=2)
+    await ui.textarea("Comment", "comment")  # Textarea for comment
+    await ui.button("Submit Comment", "submit_comment")  # Submit button
 
 # Post a new tweet
 async def new_tweet_ui(ui: KatamariUI):
@@ -63,7 +72,6 @@ async def new_tweet_ui(ui: KatamariUI):
 # Handle new tweet submission
 async def submit_new_tweet(request: Request):
     """Handle the form submission for posting a new tweet."""
-    ui_instance = KatamariUI()  # Create a new UI instance
     form_data = await request.form()
     username = form_data.get("username", "Anonymous")
     content = form_data.get("content", "")
@@ -79,35 +87,38 @@ async def submit_new_tweet(request: Request):
     tweet_id = f"tweet_{time.time_ns()}"
     tweet_db.put(tweet_id, tweet_data, tx_id)
     tweet_db.commit(tx_id)
-    
-    await ui_instance.text("Tweet posted!")
-    return Response(content=await ui_instance.generate_template(), media_type="text/html")
+
+    # Redirect to the timeline after posting the tweet
+    return RedirectResponse(url="/tweets", status_code=303)
 
 # Post a comment on a tweet
 async def submit_comment(request: Request, tweet_id: str):
     """Handle submitting a comment on a tweet."""
-    ui_instance = KatamariUI()  # Create a new UI instance
     form_data = await request.form()
-    comment_content = form_data.get("comment", "")
-    
+    comment_content = form_data.get("comment", "")  # Get the comment content from the form
+
+    if not comment_content:
+        raise HTTPException(status_code=400, detail="Comment cannot be empty")
+
     tweet_data = tweet_db.get(tweet_id, None)
     if tweet_data is None:
         raise HTTPException(status_code=404, detail="Tweet not found")
 
     comment_data = {
-        "username": "Anonymous",  # Can be replaced with actual user handling
+        "username": "Anonymous",  # This can be replaced with actual user handling
         "content": comment_content
     }
 
+    # Begin transaction to add the comment
     tx_id = begin_transaction()
     comment_id = f"comment_{time.time_ns()}"
-    comment_db.put(comment_id, comment_data, tx_id)
-    tweet_data["comments"].append(comment_id)  # Add the comment to the tweet
-    tweet_db.put(tweet_id, tweet_data, tx_id)
-    tweet_db.commit(tx_id)
+    comment_db.put(comment_id, comment_data, tx_id)  # Store the comment
+    tweet_data["comments"].append(comment_id)  # Add the comment ID to the tweet's comments list
+    tweet_db.put(tweet_id, tweet_data, tx_id)  # Update the tweet data with the new comment
+    tweet_db.commit(tx_id)  # Commit the transaction
 
-    await ui_instance.text(f"Comment posted on {tweet_id}!")
-    return Response(content=await ui_instance.generate_template(), media_type="text/html")
+    # Redirect back to the tweet view page after submitting a comment
+    return RedirectResponse(url=f"/tweet/{tweet_id}", status_code=303)
 
 # Like a tweet
 async def like_tweet(request: Request, tweet_id: str):
@@ -115,13 +126,14 @@ async def like_tweet(request: Request, tweet_id: str):
     tweet_data = tweet_db.get(tweet_id, None)
     if tweet_data is None:
         raise HTTPException(status_code=404, detail="Tweet not found")
-    
+
     tweet_data["likes"] += 1  # Increment likes
     tx_id = begin_transaction()
     tweet_db.put(tweet_id, tweet_data, tx_id)
     tweet_db.commit(tx_id)
 
-    return Response(content="Liked", media_type="text/html")
+    # Redirect back to the timeline after liking a tweet
+    return RedirectResponse(url="/tweets", status_code=303)
 
 # Main FastAPI app with KatamariUI
 app = katamari_ui_app(
@@ -133,6 +145,13 @@ app = katamari_ui_app(
     theme="light",           # Set the theme to light mode
     requires_auth=False,     # No authentication for this app
 )
+
+# Route for viewing a list of all tweets
+@app.get("/tweets", response_class=Response)
+async def list_tweets(request: Request):
+    ui_instance = KatamariUI()
+    await timeline_page_ui(ui_instance)
+    return Response(content=await ui_instance.generate_template(), media_type="text/html")
 
 # Route for viewing a tweet
 @app.get("/tweet/{tweet_id}", response_class=Response)

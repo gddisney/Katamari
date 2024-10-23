@@ -1,7 +1,7 @@
-import asyncio
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, Response, Depends, HTTPException, status
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, Response, Depends, HTTPException
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from typing import List, Dict, Callable, Any
+
 
 class KatamariUI:
     """Dynamic UI framework with support for theming, notifications, pagination, authentication, webhooks, and websockets."""
@@ -111,7 +111,27 @@ class KatamariUI:
             </div>
         """)
 
-    # Theme Configuration
+    async def raw_html(self, html_content: str):
+        """Add raw HTML directly to the page."""
+        self.components.append(html_content)
+
+    async def table(self, table_data: List[Dict[str, Any]]):
+        """Render a table."""
+        self.components.append("<table class='table table-bordered'>")
+        if len(table_data) > 0:
+            headers = table_data[0].keys()
+            self.components.append("<thead><tr>")
+            for header in headers:
+                self.components.append(f"<th>{header}</th>")
+            self.components.append("</tr></thead>")
+        self.components.append("<tbody>")
+        for row in table_data:
+            self.components.append("<tr>")
+            for value in row.values():
+                self.components.append(f"<td>{value}</td>")
+            self.components.append("</tr>")
+        self.components.append("</tbody></table>")
+
     def set_theme(self, theme: str):
         """Set the UI theme (light or dark)."""
         self.theme = theme
@@ -134,7 +154,6 @@ class KatamariUI:
             }
             """
 
-    # Notifications
     def add_notification(self, message: str):
         """Add a notification to the queue to be sent to all clients."""
         self.notifications.append(message)
@@ -143,37 +162,6 @@ class KatamariUI:
         """Send notifications to all connected clients via WebSockets."""
         await self.notify_all_clients()
 
-    # Pagination
-    async def paginated_table(self, table_data: List[Dict[str, Any]], page: int = 1, per_page: int = 10):
-        """Render a paginated table."""
-        start = (page - 1) * per_page
-        end = start + per_page
-        paginated_data = table_data[start:end]
-        self.components.append("<table class='table table-bordered'>")
-        if len(table_data) > 0:
-            # Table headers
-            headers = table_data[0].keys()
-            self.components.append("<thead><tr>")
-            for header in headers:
-                self.components.append(f"<th>{header}</th>")
-            self.components.append("</tr></thead>")
-        self.components.append("<tbody>")
-        # Table body
-        for row in paginated_data:
-            self.components.append("<tr>")
-            for value in row.values():
-                self.components.append(f"<td>{value}</td>")
-            self.components.append("</tr>")
-        self.components.append("</tbody></table>")
-        # Pagination controls
-        total_pages = (len(table_data) + per_page - 1) // per_page
-        self.components.append("<nav><ul class='pagination'>")
-        for p in range(1, total_pages + 1):
-            active_class = "active" if p == page else ""
-            self.components.append(f"<li class='page-item {active_class}'><a class='page-link' href='?page={p}'>{p}</a></li>")
-        self.components.append("</ul></nav>")
-
-    # Authentication
     def configure_navbar(self, items: List[Dict[str, str]]):
         """Configure the navbar with a list of items."""
         self.navbar_items = items
@@ -186,7 +174,6 @@ class KatamariUI:
         """Apply custom CSS to the page."""
         self.custom_css = css
 
-    # Generate HTML for Navbar
     def generate_navbar(self):
         navbar_html = '<nav class="navbar navbar-expand-lg navbar-light bg-light"><div class="container-fluid"><ul class="navbar-nav me-auto mb-2 mb-lg-0">'
         for item in self.navbar_items:
@@ -194,7 +181,6 @@ class KatamariUI:
         navbar_html += '</ul></div></nav>'
         return navbar_html
 
-    # Generate HTML for Sidebar
     def generate_sidebar(self):
         sidebar_html = '<div class="d-flex flex-column p-3 bg-light" style="width: 280px;"><ul class="nav nav-pills flex-column mb-auto">'
         for item in self.sidebar_items:
@@ -202,7 +188,6 @@ class KatamariUI:
         sidebar_html += '</ul></div>'
         return sidebar_html
 
-    # Core Functionality: Generate HTML Template
     async def generate_template(self, data=None, show_sidebar=True):
         """Dynamically generate the full HTML template, including navbar, sidebar, and content."""
         html_content = "\n".join(self.components)
