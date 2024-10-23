@@ -1,6 +1,3 @@
-Here's the full markdown including the **WebP** images from the `\imgs` folder:
-
----
 
 # Katamari Ecosystem
 
