@@ -1,8 +1,8 @@
 import asyncio
 from typing import Any, Dict, List, Optional
 import logging
-from KatamariORM import KatamariORM
-from KatamariMVCC import KatamariMVCC
+from KatamariDB import KatamariORM
+from KatamariDB import KatamariMVCC
 from KatamariPipelines import PipelineModel
 
 logger = logging.getLogger('KatamariAggregation')

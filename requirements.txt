@@ -12,3 +12,4 @@ uvicorn                # ASGI server for running FastAPI apps
 matplotlib
 pyjwt
 argon2-cffi
+pycryptodome

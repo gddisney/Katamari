@@ -1,0 +1,79 @@
+providers:
+  aws:
+    region: "us-east-1"
+    dry_run: true
+    services:
+      - name: "ec2"
+        type: "resource"
+        actions:
+          - action: "provision"
+            params:
+              instance_type: "t2.micro"
+              count: 2
+      - name: "s3"
+        type: "client"
+        actions:
+          - action: "create_bucket"
+            params:
+              bucket_name: "dummy-test-bucket"
+      - name: "lambda"
+        type: "client"
+        actions:
+          - action: "deploy_function"
+            params:
+              function_name: "testLambda"
+              handler: "lambda_function.lambda_handler"
+              runtime: "python3.8"
+
+  gcp:
+    region: "us-central1"
+    dry_run: true
+    services:
+      - name: "compute"
+        type: "client"
+        actions:
+          - action: "provision"
+            params:
+              machine_type: "n1-standard-1"
+              count: 1
+      - name: "storage"
+        type: "client"
+        actions:
+          - action: "create_bucket"
+            params:
+              bucket_name: "gcp-test-bucket"
+
+  azure:
+    region: "eastus"
+    dry_run: true
+    services:
+      - name: "vm"
+        type: "client"
+        actions:
+          - action: "provision"
+            params:
+              vm_size: "Standard_B1s"
+              count: 1
+      - name: "storage"
+        type: "client"
+        actions:
+          - action: "create_storage_account"
+            params:
+              account_name: "azureteststorage"
+
+  dummy:
+    region: "dummy-region"
+    dry_run: true
+    services:
+      - name: "dummy_instance"
+        actions:
+          - action: "provision"
+            params:
+              instance_type: "dummy-medium"
+              count: 1
+      - name: "dummy_storage"
+        actions:
+          - action: "create_storage"
+            params:
+              storage_name: "dummy-test-storage"
+
