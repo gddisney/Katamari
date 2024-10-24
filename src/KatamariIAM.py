@@ -3,7 +3,7 @@ import uuid
 import jwt  # Using PyJWT for token encoding/decoding
 import argon2  # Argon2 for password hashing
 from datetime import datetime, timedelta
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from KatamariDB import KatamariMVCC  # Assuming KatamariDB with MVCC is available
 
@@ -18,13 +18,6 @@ class User:
         self.roles = roles if roles else []
         self.is_service_account = is_service_account
         self.api_key = None  # API key support for service accounts
-        self.created_at = datetime.utcnow()
-
-
-class Role:
-    def __init__(self, role_name: str, permissions: List[str] = None):
-        self.role_name = role_name
-        self.permissions = permissions if permissions else []
         self.created_at = datetime.utcnow()
 
 
@@ -53,11 +46,11 @@ class KatamariIAM:
             return False
 
     # Generate a JWT token
-    def generate_jwt(self, username: str, roles: List[str], expires_in: timedelta) -> str:
-        """Generate a JWT token for a user."""
+    def generate_jwt(self, subject: str, roles: List[str], expires_in: timedelta) -> str:
+        """Generate a JWT token for a user or service account."""
         expiration = datetime.utcnow() + expires_in
         token = jwt.encode({
-            "username": username,
+            "sub": subject,
             "roles": roles,
             "exp": expiration
         }, self.secret_key, algorithm="HS256")
@@ -74,6 +67,17 @@ class KatamariIAM:
         except jwt.InvalidTokenError:
             logging.error("Invalid token.")
         return None
+
+    # Store token metadata for auditing or future revocation
+    def store_token_metadata(self, token: str, subject: str, expires_at: datetime, token_type: str):
+        """Store issued token metadata."""
+        tx_id = self.katamari_mvcc.begin_transaction()
+        self.katamari_mvcc.put(f"token:{token}", {
+            "subject": subject,
+            "expires_at": expires_at.isoformat(),
+            "token_type": token_type,
+        }, tx_id)
+        self.katamari_mvcc.commit(tx_id)
 
     async def create_user(self, username: str, password: str, roles: List[str] = None):
         """Create a new user with Argon2-based password hashing."""
@@ -114,6 +118,7 @@ class KatamariIAM:
             access_token = self.generate_jwt(username, user_data["roles"], self.token_expiry)
             refresh_token = str(uuid.uuid4())  # Random UUID for refresh token
 
+            # Store refresh token in the database
             self.katamari_mvcc.put(f"session:{refresh_token}", {
                 "username": username,
                 "expires_at": (datetime.utcnow() + self.refresh_token_expiry).isoformat()
@@ -160,7 +165,7 @@ class KatamariIAM:
         """Validate the JWT token."""
         decoded_payload = self.decode_jwt(token)
         if decoded_payload:
-            logging.info(f"JWT token valid for user: {decoded_payload['username']}")
+            logging.info(f"JWT token valid for user: {decoded_payload['sub']}")
             return True
         return False
 
@@ -219,4 +224,3 @@ class KatamariIAM:
             logging.error(f"Authentication failed for service account {account_name}: {e}")
             self.katamari_mvcc.commit(tx_id)
             return {}
-

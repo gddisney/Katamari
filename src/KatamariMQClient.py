@@ -2,8 +2,8 @@ import asyncio
 import websockets
 import json
 import logging
-from KatamariDBM import KatamariDBM
-from KatamariMVCC import KatamariMVCC
+from KatamariDB import KatamariDBM
+from KatamariDB import KatamariMVCC
 from KatamariPipelines import JobModel, PipelineModel
 from KatamariLambda import KatamariLambdaFunction
 

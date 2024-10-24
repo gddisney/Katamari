@@ -3,8 +3,8 @@ import websockets
 import json
 import logging
 from datetime import datetime
-from KatamariDBM import KatamariDBM
-from KatamariMVCC import KatamariMVCC
+from KatamariDB import KatamariDBM
+from KatamariDB import KatamariMVCC
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('KatamariMQServer')
