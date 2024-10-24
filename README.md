@@ -7,50 +7,65 @@ Welcome to the Katamari Ecosystem, a modular, event-driven architecture designed
 The Katamari Ecosystem consists of tightly integrated components, each specialized for specific tasks. Together, they form a powerful, cohesive, event-driven system:
 
 ### KatamariDB
+[KatamariDB Documentation](./KatamariDB.md)
+
 <img src="imgs/katamaridb.webp" width="300"/>
 
 A file-based, highly flexible key-value store inspired by MongoDB and Redis, with Elasticsearch-like query capabilities. Features a Multi-Version Concurrency Control (MVCC) system and a full-fledged Object-Relational Mapping (ORM) for advanced query handling and schema management.
 
 ### KatamariPipelines
+[KatamariPipelines Documentation](./KatamariPipelines.md)
+
 <img src="imgs/katamaripipelines.webp" width="300"/>
 
 A pipeline execution framework that orchestrates ETL (Extract, Transform, Load) processes and real-time data streaming. Seamlessly integrates with KatamariDB and KatamariLambda to manage workflows in an event-driven manner, ensuring efficient and responsive data handling.
 
 ### KatamariMQ
+[KatamariMQ Documentation](./KatamariMQ.md)
+
 <img src="imgs/katamarimq.webp" width="300"/>
 
 A distributed message queue system designed for workload distribution, data sharding, and dynamic task management. Works in conjunction with KatamariLambda to execute serverless functions triggered by events, ensuring both scalability and resilience.
 
 ### KatamariLambda
+[KatamariLambda Documentation](./KatamariLambda.md)
+
 <img src="imgs/katamarilambda.webp" width="300"/>
 
 A serverless compute platform that supports event-driven, distributed function execution. Provides the ability to define, schedule, and execute serverless functions, tightly integrated with KatamariMQ for dynamic task execution across distributed nodes.
 
 ### KatamariUI
+[KatamariUI Documentation](./KatamariUI.md)
 
 An asynchronous UI framework based on FastAPI and WebSockets, enabling real-time dynamic page rendering and interactive components. Supports theming, notifications, and visualizations, making it ideal for building real-time dashboards, admin interfaces, and responsive web applications.
 
 ### KatamariCharts
+[KatamariCharts Documentation](./KatamariCharts.md)
 
 A flexible charting component that supports both Chart.js and Matplotlib for creating rich, interactive data visualizations. Integrates easily with KatamariUI, enabling real-time data-driven visualizations for dashboards and analytics.
 
 ### KatamariAggregation
+[KatamariAggregation Documentation](./KatamariAggregation.md)
 
 A real-time, dynamic metric aggregation engine built on top of KatamariDB and KatamariORM. Allows users to define custom metrics and compute them over both real-time data streams and historical datasets, making it ideal for monitoring, performance tracking, and analytics.
 
 ### KatamariIAM
+[KatamariIAM Documentation](./KatamariIAM.md)
 
 A robust Identity and Access Management (IAM) solution integrated with KatamariDB and supporting multiple authentication methods. Provides OAuth2, JWT-based authentication, and API key-based access for users and service accounts. Features role-based access control (RBAC), multi-factor authentication support, session management, and argon2-based password hashing for secure user management. Seamlessly integrates with other Katamari Ecosystem components to secure access to data, services, and functions.
 
 ### KatamariKMS
+[KatamariKMS Documentation](./KatamariKMS.md)
 
 A key management service (KMS) that provides encryption and decryption for sensitive data. Utilizes AES encryption for managing keys and secrets, leveraging KatamariMVCC for consistent, versioned key handling. Works seamlessly with KatamariVault for storing and managing secrets securely.
 
 ### KatamariVault
+[KatamariVault Documentation](./KatamariVault.md)
 
 A secure secret management solution for the Katamari Ecosystem, integrated with KatamariKMS. Stores and retrieves secrets such as API keys, database credentials, and other sensitive data. Encrypts secrets using KatamariKMS before storing them, ensuring they remain secure and version-controlled.
 
 ### KatamariCloudProviders
+[KatamariCloudProviders Documentation](./KatamariCloudProviders.md)
 
 - **KatamariAWSProvider**: A cloud provider manager using boto3 to interact with AWS services (e.g., EC2, Lambda, S3, IAM).
 - **KatamariGCPProvider**: A cloud provider manager using google.cloud SDK to manage GCP services (e.g., Compute, Cloud Functions, Storage).
@@ -59,6 +74,7 @@ A secure secret management solution for the Katamari Ecosystem, integrated with 
 All cloud providers are integrated with KatamariKMS for secure key management and KatamariVault for secrets handling.
 
 ### KatamariIAC
+[KatamariIAC Documentation](./KatamariIAC.md)
 
 KatamariIAC enables infrastructure-as-code (IAC) capabilities, allowing users to define, scale, and manage infrastructure across multiple cloud platforms. Supports AWS, GCP, Azure, and a Dummy Provider for testing purposes. Handles dry-runs, scaling, and failover between cloud providers using KatamariScaler and KatamariFailover components. Integrated with KatamariKMS for managing keys and KatamariVault for secure credentials.
 
@@ -90,17 +106,19 @@ git clone https://github.com/gddisney/katamari.git
 
 Explore each component of the Katamari Ecosystem in detail:
 
-- **KatamariDB**: A flexible, file-based key-value store with MVCC and ORM capabilities, perfect for high-performance, scalable storage.
-- **KatamariPipelines**: Manage ETL workflows and real-time data processing with an event-driven execution model.
-- **KatamariMQ**: A powerful message queue for workload distribution, seamlessly integrated with serverless functions.
-- **KatamariLambda**: A serverless compute platform for distributed, event-driven function execution.
-- **KatamariUI**: A real-time UI framework for creating dashboards and admin interfaces with dynamic visualizations.
-- **KatamariCharts**: Integrates with KatamariUI to provide rich, interactive data visualizations.
-- **KatamariAggregation**: Real-time metric computation and aggregation over stored and streaming data.
-- **KatamariIAM**: A secure identity and access management system supporting multi-factor authentication, API keys, and role-based access control.
-- **KatamariKMS**: A key management service for handling encrypted secrets and API keys across the ecosystem.
-- **KatamariVault**: A secure storage system for managing secrets and credentials.
-- **KatamariIAC**: Infrastructure-as-code component to deploy and manage cloud infrastructure across AWS, GCP, and Azure.
+- [**KatamariDB**](./KatamariDB.md): A flexible, file-based key-value store with MVCC and ORM capabilities, perfect for high-performance, scalable storage.
+- [**KatamariPipelines**](./KatamariPipelines.md): Manage ETL workflows and real-time data processing with an event-driven execution model.
+- [**KatamariMQ**](./KatamariMQ.md): A powerful message queue for workload distribution, seamlessly integrated with serverless functions.
+- [**KatamariLambda**](./KatamariLambda.md): A serverless compute platform for distributed, event-driven function execution.
+- [**KatamariUI**](./KatamariUI.md): A real-time UI framework for creating dashboards and admin interfaces with dynamic visualizations.
+- [**KatamariCharts**](./KatamariCharts.md): Integrates with KatamariUI to provide rich, interactive data visualizations.
+- [**KatamariAggregation**](./KatamariAggregation.md): Real-time metric computation and aggregation over stored and streaming data.
+- [**KatamariIAM**](./KatamariIAM.md): A secure identity and access management system supporting multi-factor authentication, API keys, and role-based access control.
+- [**KatamariKMS**](./KatamariKMS.md): A key management service for handling encrypted secrets and API keys across the ecosystem.
+- [**KatamariVault**](./KatamariVault.md): A secure storage system for managing secrets and credentials.
+- [**KatamariIAC**](./KatamariIAC.md): Infrastructure-as-code component to deploy and manage cloud infrastructure across AWS, GCP, and Azure
+
+.
 
 ## License
 
